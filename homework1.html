@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Entrega 1, modelo lineal</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Félix Hernández del Olmo" />
+<meta name="keywords" content="Artificial Intelligence, Machine Learning, Reinforcement Learning, Intelligent Control, Adaptive Interfaces, Recommender Systems, Computer Science, Computación, Inteligencia Artificial, Aprendizaje Automático, Interfaces Adaptativos, Sistemas Recomendadores, Modelado del Usuario, Aprendizaje y personalización del Software, Universidad, University, Programación" />
+<link rel="stylesheet" type="text/css" href="http://olivierberger.org/css/org.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Entrega 1, modelo lineal</h1>
+<p>
+En esta tarea analizaremos y trataremos de predecir el tamaño de un pez mediante lo visto en la asignatura hasta el momento (regresión lineal) en base a las características/atributos del tanque en el que se han criado. 
+
+</p>
+
+<p>
+La tarea concreta que se pide es un informe vuestro personal en R que contenga:
+</p>
+
+<ol class="org-ol">
+<li>exploración de estos datos tanto visual como numérica;</li>
+<li>aplicación del lenguaje R y el modelado lineal para tratar de  predecir el tamaño del pez.</li>
+</ol>
+
+<p>
+El informe se entregará en pdf justificando lo que realizáis insertando el código R correspondiente y su resultado.
+</p>
+
+<p>
+Para hacer facilitar esta tarea y la escritura del informe, os recomendamos una de las siguientes herramientas:
+</p>
+<ol class="org-ol">
+<li>google colab (para crear un cuaderno en R: <a href="https://colab.research.google.com/notebook#create=true&amp;language=r">https://colab.research.google.com/notebook#create=true&amp;language=r</a> para ver una demo: <a href="https://colab.research.google.com/github/IRkernel/IRkernel/blob/master/example-notebooks/Demo.ipynb">https://colab.research.google.com/github/IRkernel/IRkernel/blob/master/example-notebooks/Demo.ipynb</a> );</li>
+<li>un paquete como knitr (ver <a href="https://swcarpentry.github.io/r-novice-gapminder-es/15-knitr-markdown/">https://swcarpentry.github.io/r-novice-gapminder-es/15-knitr-markdown/</a> ) si utilizáis una herramienta como Rstudio (ver <a href="https://rstudio.com/">https://rstudio.com/</a> );</li>
+<li>el famoso org-mode del editor emacs (ver <a href="https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-R.html">https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-R.html</a> ) si preferís este entorno/editor de código libre.</li>
+</ol>
+
+<p>
+Los datos de los peces se encuentran a continuación:
+</p>
+<pre class="example">
+#  Reference:
+#
+#    R J Freund and P D Minton,
+#    Regression Methods,
+#    Dekker, 1979, page 111.
+#
+#    Helmut Spaeth,
+#    Mathematical Algorithms for Linear Regression,
+#    Academic Press, 1991, page 305,
+#    ISBN 0-12-656460-4.
+#
+#  Discussion:
+#
+#    The length of a species of fish is to be represented as a function
+#    of the age and water temperature.  The fish are kept in tanks
+#    at 25, 27, 29 and 31 degrees Celsius.  After birth, a test specimen
+#    is chosen at random every 14 days and its length measured.
+#
+#    There are 44 rows of data.  The data include:
+#
+#      I,  the index;
+#      A1, the age of the fish;
+#      A2, the water temperature in degrees Celsius;
+#      B,  the length of the fish.
+#
+#    We seek a model of the form:
+#
+#      B = A1 * X1 + A2 * X2
+#
+4 columns
+44 rows
+Index
+Age of fish (days)
+Temperature of water (degrees Celsius)
+Length of fish
+ 1   14  25   620
+ 2   28  25  1315
+ 3   41  25  2120
+ 4   55  25  2600
+ 5   69  25  3110
+ 6   83  25  3535
+ 7   97  25  3935
+ 8  111  25  4465
+ 9  125  25  4530
+10  139  25  4570
+11  153  25  4600
+12   14  27   625
+13   28  27  1215
+14   41  27  2110
+15   55  27  2805
+16   69  27  3255
+17   83  27  4015
+18   97  27  4315
+19  111  27  4495
+20  125  27  4535
+21  139  27  4600
+22  153  27  4600
+23   14  29   590
+24   28  29  1305
+25   41  29  2140
+26   55  29  2890
+27   69  29  3920
+28   83  29  3920
+29   97  29  4515
+30  111  29  4520
+31  125  29  4525
+32  139  29  4565
+33  153  29  4566
+34   14  31   590
+35   28  31  1205
+36   41  31  1915
+37   55  31  2140
+38   69  31  2710
+39   83  31  3020
+40   97  31  3030
+41  111  31  3040
+42  125  31  3180
+43  139  31  3257
+44  153  31  3214
+</pre>
+</div>
+</body>
+</html>
